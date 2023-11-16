@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat with Model</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        #conversation {
+            background-color: white;
+            border: solid 1px #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            flex-grow: 1; /* 使对话框区域占据剩余空间 */
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+        }
+
+        input[type=text] {
+            flex: 1;
+            padding: 10px;
+            border: solid 1px #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        input[type=submit] {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #5cb85c;
+            color: white;
+            cursor: pointer;
+        }
+
+        input[type=submit]:hover {
+            background-color: #4cae4c;
+        }
+    </style>
+<script>
+    function sendMessage(event) {
+        event.preventDefault(); // 阻止表单的默认提交行为
+
+        var messageInput = document.getElementById('message'); // 获取输入框元素
+        var message = messageInput.value; // 获取输入的消息
+        messageInput.value = ''; // 清空输入框
+
+        // 在发送请求之前，立即将用户的消息添加到对话框中
+        var conversation = document.getElementById('conversation');
+        conversation.innerHTML += '<b>用户:</b> ' + message + '<br>';
+
+        var xhr = new XMLHttpRequest(); // 创建XMLHttpRequest对象
+        xhr.open('POST', '/chat', true); // 配置请求
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                // 请求成功，处理响应数据
+                var response = xhr.responseText;
+
+                // 将接收的回复附加到对话历史记录中
+                conversation.innerHTML += '<b>Ai助手:</b> ' + response + '<br>';
+                conversation.scrollTop = conversation.scrollHeight; // 滚动到底部
+            }
+        };
+
+        xhr.send('message=' + encodeURIComponent(message)); // 发送请求
+    }
+    function uploadFile(event) {
+            event.preventDefault(); // 阻止表单默认行为
+
+            var fileInput = document.getElementById('file'); // 获取文件输入元素
+            var file = fileInput.files[0]; // 获取选中的文件
+
+            var formData = new FormData();
+            formData.append('file', file); // 添加文件到表单数据中
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/upload', true); // 配置上传的请求
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    // 请求成功，可以在这里处理响应
+                    alert('File uploaded successfully.');
+                }
+            };
+
+            xhr.send(formData); // 发送包含文件的表单数据
+        }
+</script>
+</head>
+
+<body>
+    <div id="conversation"></div> <!-- 对话记录 -->
+
+    <form onsubmit="sendMessage(event)">
+        <input type="text" id="message" name="message" placeholder="Type your message here..." autofocus>
+        <input type="submit" value="Send">
+    </form>
+
+    <!-- 文件上传输入和按钮 -->
+    <input type="file" id="file" name="file" style="display: inline-block;">
+    <button onclick="uploadFile(event)">Upload File</button>
+    
+</body>
+
+</html>
