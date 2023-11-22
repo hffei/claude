@@ -65,6 +65,11 @@
             text-align: right;
         }
 
+        .help-text {
+            cursor: pointer; /* 将鼠标光标变成手形 */
+        }
+
+
         .ai-message {
             text-align: left;
         }
@@ -124,6 +129,11 @@
 
         xhr.send(formData); // 发送请求
     }
+    function fillInput(element) {
+    var messageInput = document.getElementById('message');
+    messageInput.value = element.textContent; // 将点击的段落文本内容设置到输入框中
+}
+
 </script>
 </head>
 
@@ -131,7 +141,17 @@
     <h1 style="text-align: center;">Chat with Walle</h1>
     <p style="text-align: center;font-weight: 200;">我是一名人工智能机器人，能够帮你分析文件和实现对话。</p>
     <div id="conversation"></div> <!-- 对话记录 -->
-
+    <div style="display: flex; justify-content: center;">
+        <p class="help-text" style="margin-right: 50px;" onclick="fillInput(this)">这里是帮助文字1</p>
+        <p class="help-text" style="margin-right: 50px;" onclick="fillInput(this)">这里是帮助文字2</p>
+        <p class="help-text" onclick="fillInput(this)">这里是帮助文字3</p>
+    </div>
+    
+    
+    
+    
+    
+    
     <form onsubmit="sendMessage(event)">
         <input type="text" id="message" name="message" placeholder="在此输入信息..." autofocus>
         <input type="file" id="file" name="file" style="display: inline-block;"> <!-- 文件上传 -->
@@ -139,4 +159,3 @@
     </form>
 
 </body>
-</html>
