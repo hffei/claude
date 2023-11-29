@@ -22,7 +22,7 @@ def chat():
     # 检查并保存上传的文件
     file = request.files.get('file')
     if file and file.filename != '':
-        filename = secure_filename(file.filename)
+        filename = file.filename
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
         files = {'file': (filename, open(file_path, 'rb'))}
