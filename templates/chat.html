@@ -51,30 +51,22 @@
         }
 
         .message {
-            padding: 5px 10px;
-            margin: 5px 0;
-            border-radius: 5px;
-            background-color: #f1f1f1;
-        }
-
-        .message b {
-            color: #333;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0px 0px 2px #ddd;
         }
 
         .user-message {
-            text-align: right;
+            text-align: left;
+            background-color: #D0E6FF;
         }
-
-        .help-text {
-            cursor: pointer; /* 将鼠标光标变成手形 */
-        }
-
 
         .ai-message {
             text-align: left;
+            background-color: #FFE0B3;
         }
 
-        /* 媒体查询，适应不同的屏幕尺寸 */
         @media (max-width: 768px) {
             form {
                 flex-direction: column;
@@ -89,50 +81,49 @@
     </style>
 <script>
     function sendMessage(event) {
-        event.preventDefault(); // 阻止表单的默认提交行为
+        event.preventDefault();
 
-        var messageInput = document.getElementById('message'); // 获取输入框元素
-        var message = messageInput.value; // 获取输入的消息
-        messageInput.value = ''; // 清空输入框
+        var messageInput = document.getElementById('message');
+        var message = messageInput.value;
+        messageInput.value = '';
 
         var conversation = document.getElementById('conversation');
-        conversation.innerHTML += '<b>用户:</b> ' + message + '<br>';
+        conversation.innerHTML += '<div class="message user-message"><b>用户:</b> ' + message + '</div>';
 
         var formData = new FormData();
-        formData.append('message', message); // 添加文本消息
+        formData.append('message', message);
 
         var fileInput = document.getElementById('file');
         if (fileInput.files.length > 0) {
             var file = fileInput.files[0];
-            formData.append('file', file); // 添加文件
+            formData.append('file', file);
         }
 
         var xhr = new XMLHttpRequest();
-        xhr.open('POST', '/chat', true); // 配置请求
+        xhr.open('POST', '/chat', true);
 
         xhr.onreadystatechange = function() {
             if (xhr.readyState == 4 && xhr.status == 200) {
-                // 请求成功，处理响应数据
                 var response = JSON.parse(xhr.responseText);
 
                 if (response && response.text) {
-                    conversation.innerHTML += '<b>Ai助手:</b> ' + response.text + '<br>';
+                    conversation.innerHTML += '<div class="message ai-message"><b>Ai助手:</b> ' + response.text + '</div>';
                 } else {
-                    conversation.innerHTML += '<b>Ai助手:</b> Response format error<br>';
+                    conversation.innerHTML += '<div class="message ai-message"><b>Ai助手:</b> Response format error</div>';
                 }
                 
-                conversation.scrollTop = conversation.scrollHeight; // 滚动到底部
-
-                fileInput.value = ''; // 重置文件输入，取消文件选择
+                conversation.scrollTop = conversation.scrollHeight;
+                fileInput.value = '';
             }
         };
 
-        xhr.send(formData); // 发送请求
+        xhr.send(formData);
     }
+
     function fillInput(element) {
-    var messageInput = document.getElementById('message');
-    messageInput.value = element.textContent; // 将点击的段落文本内容设置到输入框中
-}
+        var messageInput = document.getElementById('message');
+        messageInput.value = element.textContent;
+    }
 
 </script>
 </head>
@@ -140,22 +131,18 @@
 <body>
     <h1 style="text-align: center;">Chat with Walle</h1>
     <p style="text-align: center;font-weight: 200;">我是一名人工智能机器人，能够帮你分析文件和实现对话。</p>
-    <div id="conversation"></div> <!-- 对话记录 -->
+    <div id="conversation"></div>
     <div style="display: flex; justify-content: center;">
         <p class="help-text" style="margin-right: 50px;" onclick="fillInput(this)">这篇文章讲了什么</p>
         <p class="help-text" style="margin-right: 50px;" onclick="fillInput(this)">这篇文章的创新点是什么</p>
         <p class="help-text" onclick="fillInput(this)">这篇文章有哪些不足</p>
     </div>
     
-    
-    
-    
-    
-    
     <form onsubmit="sendMessage(event)">
         <input type="text" id="message" name="message" placeholder="在此输入信息..." autofocus>
-        <input type="file" id="file" name="file" style="display: inline-block;"> <!-- 文件上传 -->
+        <input type="file" id="file" name="file" style="display: inline-block;">
         <input type="submit" value="发送">
     </form>
 
 </body>
+</html>
