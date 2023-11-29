@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, session
 import requests
 from werkzeug.utils import secure_filename
 import os
@@ -11,18 +11,12 @@ app.secret_key = 'your_secret_key'  # 在生产环境中应该从环境变量或
 # 确保上传目录存在
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
-# 初始化全局变量
-global_id = ''
-global_conversation_id = ''
-
 @app.route('/')
 def home():
     return render_template('chat.html')
 
 @app.route('/chat', methods=['POST'])
 def chat():
-    global global_id, global_conversation_id
-
     user_input = request.form['message']
 
     # 检查并保存上传的文件
@@ -40,22 +34,22 @@ def chat():
         "q": user_input,
         "key": "claude-asfkljfvoe",  # 应从环境变量或配置文件中获取
     }
-    if global_id:
-        data['id'] = global_id
-    if global_conversation_id:
-        data['conversation_id'] = global_conversation_id
+    if 'id' in session:
+        data['id'] = session['id']
+    if 'conversation_id' in session:
+        data['conversation_id'] = session['conversation_id']
 
     url = "http://23.224.232.204/claude_api"
 
     # 发送请求到 API
     resp = requests.post(url, data=data, files=files)
     response_data = resp.json()
-    global_id = response_data.get('id', global_id)  # 更新全局 id
-    global_conversation_id = response_data.get('conversation_id', global_conversation_id)  # 更新全局 conversation_id
+    session['id'] = response_data.get('id', session.get('id'))  # 更新会话中的 id
+    session['conversation_id'] = response_data.get('conversation_id', session.get('conversation_id'))  # 更新会话中的 conversation_id
 
     # 输出会话 ID 用于调试
-    print(global_id)
-    print(global_conversation_id)
+    print(session.get('id'))
+    print(session.get('conversation_id'))
 
     return response_data
 
