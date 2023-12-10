@@ -11,7 +11,7 @@
             padding: 0;
             /* display: flex; */
             flex-direction: column;
-            height: 100vh;
+            height: 200px;
             padding-bottom: 200px;
         }
 
@@ -19,7 +19,7 @@
 
         #conversation {
             flex-grow: 1;
-            padding: 80px 40px;
+            padding: 240px 40px;
             overflow-y: auto;
             background-color: #fff;
             border-bottom: 2px solid #dedede;
@@ -190,6 +190,7 @@
             <p class="help-text" onclick="fillInput(this)">这篇文章有哪些不足</p>
         </div>
         <form onsubmit="sendMessage(event)">
+            
             <input type="text" id="message" name="message" placeholder="在此输入信息..." autofocus>
             <input type="file" id="file" name="file" style="display: inline-block;">
             <input type="submit" value="发送">
