@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat with Model</title>
     <style>
         body {
@@ -8,14 +9,17 @@
             background-color: #f7f7f7;
             margin: 0;
             padding: 0;
-            display: flex;
+            /* display: flex; */
             flex-direction: column;
             height: 100vh;
+            padding-bottom: 200px;
         }
+
+        
 
         #conversation {
             flex-grow: 1;
-            padding: 20px;
+            padding: 80px 40px;
             overflow-y: auto;
             background-color: #fff;
             border-bottom: 2px solid #dedede;
@@ -68,6 +72,7 @@
         }
 
         @media (max-width: 768px) {
+            
             form {
                 flex-direction: column;
             }
@@ -77,11 +82,54 @@
                 margin-right: 0;
                 width: 100%;
             }
+
+            body {
+                padding: 10px; /* 为更好的间距添加一些内边距 */
+            }
+
+            #conversation {
+                padding: 80px 40px;
+                margin-bottom: 40px;
+            }
+
+            .help-text {
+                margin-right: 10px; /* 减少边距以改善间距 */
+                font-size: 14px; /* 适当调整字体大小以在移动设备上显示更小的文字 */
+            }
+        }
+        /* .loading-spinner {
+            display: block;
+        } */
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid #3498db;
+            width: 30px;
+            height: 30px !important;
+            animation: spin 1s linear infinite;
+            margin: auto;
+            margin-top: 20px;
+            display: none;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .bottom_wrap {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
         }
     </style>
+
 <script>
     function sendMessage(event) {
         event.preventDefault();
+
+        // 显示加载动画
+        var loadingSpinner = document.getElementById('loading-spinner');
+        loadingSpinner.style.display = 'block';
 
         var messageInput = document.getElementById('message');
         var message = messageInput.value;
@@ -111,7 +159,7 @@
                 } else {
                     conversation.innerHTML += '<div class="message ai-message"><b>Ai助手:</b> Response format error</div>';
                 }
-                
+                loadingSpinner.style.display = 'none';
                 conversation.scrollTop = conversation.scrollHeight;
                 fileInput.value = '';
             }
@@ -132,17 +180,22 @@
     <h1 style="text-align: center;">Chat with Walle</h1>
     <p style="text-align: center;font-weight: 200;">我是一名人工智能机器人，能够帮你分析文件和实现对话。</p>
     <div id="conversation"></div>
-    <div style="display: flex; justify-content: center;">
-        <p class="help-text" style="margin-right: 50px;" onclick="fillInput(this)">这篇文章讲了什么</p>
-        <p class="help-text" style="margin-right: 50px;" onclick="fillInput(this)">这篇文章的创新点是什么</p>
-        <p class="help-text" onclick="fillInput(this)">这篇文章有哪些不足</p>
+    
+    
+    <div id="loading-spinner" class="loading-spinner"></div>
+    <div class="bottom_wrap">
+        <div style="display: flex; justify-content: center;">
+            <p class="help-text" style="margin-right: 50px;" onclick="fillInput(this)">这篇文章讲了什么</p>
+            <p class="help-text" style="margin-right: 50px;" onclick="fillInput(this)">这篇文章的创新点是什么</p>
+            <p class="help-text" onclick="fillInput(this)">这篇文章有哪些不足</p>
+        </div>
+        <form onsubmit="sendMessage(event)">
+            <input type="text" id="message" name="message" placeholder="在此输入信息..." autofocus>
+            <input type="file" id="file" name="file" style="display: inline-block;">
+            <input type="submit" value="发送">
+        </form>
     </div>
     
-    <form onsubmit="sendMessage(event)">
-        <input type="text" id="message" name="message" placeholder="在此输入信息..." autofocus>
-        <input type="file" id="file" name="file" style="display: inline-block;">
-        <input type="submit" value="发送">
-    </form>
 
 </body>
 </html>

@@ -55,4 +55,4 @@ def chat():
 
 # 启动应用
 if __name__ == '__main__':
-    app.run(debug=True)  # 注意：在生产环境中应设置 debug=False
+    app.run(host='0.0.0.0',debug=True)  # 注意：在生产环境中应设置 debug=False
